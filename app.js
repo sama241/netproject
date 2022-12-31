@@ -137,15 +137,16 @@ app.post('/', function (req, res) {
  
   x = req.body.username;
   y = req.body.password;
-
-  MongoClient.connect("mongodb://127.0.0.1:27017", function (err, client) {
+  req.session.user=req.body.username;
+  if(x== 'admin' && y=='admin'){
+    res.render('home.ejs');
+ }
+ else{ MongoClient.connect("mongodb://127.0.0.1:27017", function (err, client) { 
     if (err) throw err;
     var db = client.db('myDB');
     var collection = db.collection('myCollection');
-    if(x== 'admin' && y=='admin'){
-       res.render('home.ejs');
-    }
-    else collection.find({ username: x} && {password:y} , { $exists: true }).toArray(function (err, items) //find if a value exists
+    
+   collection.find({ username: x} && {password:y} , { $exists: true }).toArray(function (err, items) //find if a value exists
     {
       if (err) throw err;
 
@@ -166,6 +167,7 @@ app.post('/', function (req, res) {
       }
     })
   })
+}
 });
 
 
